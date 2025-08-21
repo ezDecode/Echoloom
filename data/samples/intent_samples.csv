@@ -1,0 +1,6 @@
+text,intent
+What are your hours?,faq_hours
+How can I reset my password?,faq_password_reset
+Hello there,smalltalk_greeting
+Thanks!,smalltalk_thanks
+Where is your office located?,faq_location
