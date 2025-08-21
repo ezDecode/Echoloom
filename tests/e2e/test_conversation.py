@@ -1,6 +1,5 @@
 from fastapi.testclient import TestClient
 from echoloom.app import create_app
-import os
 
 
 def test_e2e_conversation_flow(tmp_path, monkeypatch):

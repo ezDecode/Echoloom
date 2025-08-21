@@ -10,7 +10,7 @@ from .nlp.tone import adjust_tone
 from .nlp.language import detect_language
 from .nlp.pii import mask_pii
 from .kb.retrieval import KBIndex
-from .kb.formatting import format_answer, to_json
+from .kb.formatting import format_answer
 from .kb.ingest_kb import csv_to_jsonl
 from .schemas import ChatRequest, ChatResponse, ImportKBResponse, ReloadModelsResponse, EntityModel, DeleteDataResponse
 from .security import require_api_key, rate_limit

@@ -1,8 +1,7 @@
 from pathlib import Path
-import json
 from echoloom.kb.ingest_kb import csv_to_jsonl
 from echoloom.kb.retrieval import KBIndex
-from echoloom.kb.formatting import format_answer, to_json
+from echoloom.kb.formatting import format_answer
 
 
 def test_kb_ingest_and_retrieval_and_formatting(tmp_path: Path):
@@ -20,6 +19,9 @@ def test_kb_ingest_and_retrieval_and_formatting(tmp_path: Path):
 	assert results and results[0][1] > 0
 	entry, score = results[0]
 	fa = format_answer(entry, score)
-	obj = to_json(fa)
+	obj = {
+		"source_id": fa.source_id,
+		"answer": fa.answer,
+	}
 	assert obj["source_id"] == "faq_hours"
 	assert "open" in obj["answer"].lower()
