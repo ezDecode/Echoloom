@@ -25,3 +25,9 @@ def test_chat_and_kb_import_flow(tmp_path, monkeypatch):
 	data = r2.json()
 	assert data["answer"]
 	assert data["intent"]
+	assert data["language"]
+
+	# delete data
+	r3 = client.delete("/data", headers={"x-api-key": "test-key"})
+	assert r3.status_code == 200
+	assert r3.json()["status"] == "deleted"

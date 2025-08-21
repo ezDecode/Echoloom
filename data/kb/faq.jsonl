@@ -1,0 +1,3 @@
+{"id": "faq_hours", "question": "What are your hours?", "answer": "We are open 9am-5pm Monday to Friday.", "tags": ["hours"], "intent": "faq_hours", "metadata": {}}
+{"id": "faq_location", "question": "Where is your office located?", "answer": "Our office is at 123 Main St.", "tags": ["location"], "intent": "faq_location", "metadata": {}}
+{"id": "faq_password_reset", "question": "How can I reset my password?", "answer": "Use the Forgot Password link on the login page.", "tags": ["account"], "intent": "faq_password_reset", "metadata": {}}

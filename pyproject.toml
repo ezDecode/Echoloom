@@ -17,6 +17,7 @@ dependencies = [
   "scikit-learn>=1.5",
   "vaderSentiment>=3.3",
   "prometheus-client>=0.20",
+  "langdetect>=1.0",
 ]
 
 [project.optional-dependencies]
@@ -25,6 +26,10 @@ dev = [
   "pytest-cov>=5.0",
   "ruff>=0.5",
   "black>=24.8",
+  "httpx>=0.28",
+]
+ui = [
+  "streamlit>=1.38",
   "httpx>=0.28",
 ]
 
