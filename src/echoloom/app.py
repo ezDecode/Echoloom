@@ -1,7 +1,8 @@
 from fastapi import FastAPI, Depends
 from pydantic import BaseModel
-from prometheus_client import CollectorRegistry, CONTENT_TYPE_LATEST, Counter, generate_latest
+from prometheus_client import CollectorRegistry, CONTENT_TYPE_LATEST, Counter, Histogram, Gauge, generate_latest
 from fastapi.responses import Response
+import time
 
 from .nlp.adapter import NLPAdapter
 from .nlp.intent_classifier import IntentExample
@@ -28,6 +29,9 @@ def create_app() -> FastAPI:
 	kb = KBIndex()
 	registry = CollectorRegistry()
 	requests_total = Counter("requests_total", "Total HTTP requests", registry=registry)
+	intent_requests_total = Counter("intent_requests_total", "Requests by top intent", ["intent"], registry=registry)
+	chat_latency_seconds = Histogram("chat_latency_seconds", "Latency of /chat in seconds", registry=registry)
+	kb_entries_gauge = Gauge("kb_entries", "Number of KB entries", registry=registry)
 
 	seed_examples = [
 		IntentExample("hi", "smalltalk_greeting"),
@@ -44,8 +48,9 @@ def create_app() -> FastAPI:
 		try:
 			kb.load_jsonl(jsonl)
 			kb.build()
+			kb_entries_gauge.set(len(kb.entries))
 		except FileNotFoundError:
-			pass
+			kb_entries_gauge.set(0)
 
 	@app.get("/health", response_model=HealthResponse)
 	async def health() -> HealthResponse:
@@ -56,6 +61,7 @@ def create_app() -> FastAPI:
 		csv_to_jsonl(get_kb_csv_path(), get_kb_jsonl_path())
 		kb.load_jsonl(get_kb_jsonl_path())
 		kb.build()
+		kb_entries_gauge.set(len(kb.entries))
 		return ImportKBResponse(imported=len(kb.entries))
 
 	@app.post("/models/reload", response_model=ReloadModelsResponse, dependencies=[Depends(require_api_key)])
@@ -68,6 +74,7 @@ def create_app() -> FastAPI:
 		if getattr(adapter.intent_classifier, "pipeline", None) is None:
 			adapter.intent_classifier.train(seed_examples)
 		lang = detect_language(payload.message)
+		start = time.perf_counter()
 		res = adapter.analyze(payload.message)
 		answer_text = res.smalltalk or ""
 		source_id = None
@@ -85,6 +92,9 @@ def create_app() -> FastAPI:
 		# tone adjust and PII mask
 		answer_text = adjust_tone(answer_text or "I can help with that.", res.sentiment.label if res.sentiment else "neutral")
 		answer_text = mask_pii(answer_text)
+		duration = time.perf_counter() - start
+		chat_latency_seconds.observe(duration)
+		intent_requests_total.labels(intent=res.intents[0]).inc()
 		return ChatResponse(
 			intent=res.intents[0],
 			entities=[EntityModel(type=e.type, value=e.value, start=e.start, end=e.end) for e in res.entities],
