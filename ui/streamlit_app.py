@@ -70,10 +70,13 @@ with messages:
 		meta = entry.get("meta") or {}
 		when = time.strftime("%H:%M:%S", time.localtime(entry.get("ts", time.time())))
 		badges = []
-		if meta.get("intent"): badges.append(f"<span class='badge'>intent: {meta['intent']}</span>")
-		if meta.get("language"): badges.append(f"<span class='badge'>lang: {meta['language']}</span>")
+		if meta.get("intent"):
+			badges.append(f"<span class='badge'>intent: {meta['intent']}</span>")
+		if meta.get("language"):
+			badges.append(f"<span class='badge'>lang: {meta['language']}</span>")
 		sent = meta.get("sentiment")
-		if sent: badges.append(f"<span class='badge'>sentiment: {sent}</span>")
+		if sent:
+			badges.append(f"<span class='badge'>sentiment: {sent}</span>")
 		badges_html = " ".join(badges)
 		if role == "user":
 			st.markdown(f"<div class='msg user'><div class='avatar'>🧑</div><div class='bubble'><b>You</b> · <span class='meta'>{when}</span><div>{text}</div></div></div>", unsafe_allow_html=True)

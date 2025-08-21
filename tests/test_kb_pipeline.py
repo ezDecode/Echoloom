@@ -1,5 +1,4 @@
 from pathlib import Path
-import json
 from echoloom.kb.ingest_kb import csv_to_jsonl
 from echoloom.kb.retrieval import KBIndex
 from echoloom.kb.formatting import format_answer, to_json
