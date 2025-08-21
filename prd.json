@@ -1,0 +1,392 @@
+{
+  "project": {
+    "name": "Echoloom",
+    "summary": "A Python-based chatbot with intent recognition, entity extraction, FAQ knowledge base, sentiment-aware responses, REST APIs and optional Bangla support. Backend in Flask or FastAPI, NLP via spaCy / NLTK / Hugging Face, optional React frontend.",
+    "version": "1.0",
+    "tech_stack": [
+      "Python 3.10+",
+      "spaCy / NLTK / Hugging Face Transformers",
+      "FastAPI (preferred) or Flask",
+      "Uvicorn / Gunicorn",
+      "PostgreSQL or MongoDB",
+      "Redis (caching, rate-limiting)",
+      "Docker, optional Kubernetes",
+      "Optional: React.js for frontend"
+    ],
+    "goals": [
+      "Provide intelligent conversational responses to typed user queries",
+      "Support intent recognition, entity extraction and small talk",
+      "Expose REST APIs for integration",
+      "Support FAQ knowledge-base retrieval and ranking",
+      "Adjust bot tone using sentiment analysis",
+      "Optional: support Bangla language using pretrained HF models"
+    ]
+  },
+  "modules": [
+    {
+      "id": "M1",
+      "title": "Project Setup & Architecture",
+      "description": "Create repository, skeleton, CI/CD, and high-level architecture diagrams and decisions so team members can start implementing consistently.",
+      "tasks": [
+        {
+          "id": "M1-T1",
+          "title": "Repository Initialization",
+          "description": "Create git repository with branch strategy (main/develop/feature), add .gitignore, license, README template, and CONTRIBUTING.md.",
+          "dependencies": [],
+          "deliverables": ["Git repo initialized", "README + CONTRIBUTING + license files", "Branching strategy documented"]
+        },
+        {
+          "id": "M1-T2",
+          "title": "Project Skeleton & Packaging",
+          "description": "Create Python package skeleton, virtualenv / pyproject.toml or requirements.txt, basic folder structure for services, models, tests and docs.",
+          "dependencies": ["M1-T1"],
+          "deliverables": ["Python package skeleton", "requirements.txt or pyproject.toml", "src/, tests/, docs/ folders"]
+        },
+        {
+          "id": "M1-T3",
+          "title": "Architecture Design & Diagrams",
+          "description": "Define and document system architecture (components: API, NLP engine, KB, DB, cache, frontend), sequence diagrams for query flow, and data flow diagrams.",
+          "dependencies": ["M1-T2"],
+          "deliverables": ["High-level architecture diagram (PNG/PDF)", "Sequence diagrams for core flows", "Component responsibilities doc"]
+        },
+        {
+          "id": "M1-T4",
+          "title": "Environment & Secrets Management",
+          "description": "Define environment variables, secret management strategy (Vault / env files / cloud secrets), and example .env.template for dev.",
+          "dependencies": ["M1-T2"],
+          "deliverables": [".env.template", "Secrets handling policy"]
+        },
+        {
+          "id": "M1-T5",
+          "title": "CI/CD Basic Pipeline",
+          "description": "Create CI pipeline for tests, linting, build and Docker image creation. Optionally add CD pipeline to staging environment.",
+          "dependencies": ["M1-T1", "M1-T2"],
+          "deliverables": ["CI config (GitHub Actions / GitLab CI)", "Dockerfile", "CI badge in README"]
+        }
+      ]
+    },
+    {
+      "id": "M2",
+      "title": "Core NLP Engine",
+      "description": "Implement intent recognition, entity extraction, small-talk module and model integration layer that can host spaCy pipelines and Hugging Face models.",
+      "tasks": [
+        {
+          "id": "M2-T1",
+          "title": "Data Schema & Pipeline Design",
+          "description": "Design schema for training/label data, canonical intent names, entity types, and create ETL pipeline for ingesting text samples and annotations.",
+          "dependencies": ["M1-T3", "M1-T2"],
+          "deliverables": ["Data schema spec", "Data ingestion scripts", "Sample dataset (CSV/JSON)"]
+        },
+        {
+          "id": "M2-T2",
+          "title": "Intent Taxonomy & Annotation Guidelines",
+          "description": "Define a list of intents (core queries, FAQ mapping, small talk), priorities and annotation guidelines for labeling training data.",
+          "dependencies": ["M2-T1"],
+          "deliverables": ["Intent taxonomy document", "Annotation guideline PDF", "Seed labeled examples"]
+        },
+        {
+          "id": "M2-T3",
+          "title": "Model Selection & Baseline",
+          "description": "Evaluate candidate NLP approaches (rule-based, spaCy textcat, sklearn classifier, Hugging Face fine-tune) and pick a baseline approach for intent classification.",
+          "dependencies": ["M2-T2"],
+          "deliverables": ["Model evaluation report", "Baseline model implementation", "Benchmark metrics"]
+        },
+        {
+          "id": "M2-T4",
+          "title": "Intent Recognition Implementation",
+          "description": "Implement the chosen intent classifier with training, inference APIs and serialisation (save/load). Add training script and evaluation metrics.",
+          "dependencies": ["M2-T3"],
+          "deliverables": ["Intent classifier code", "Training script", "Saved model artifacts", "Evaluation report"]
+        },
+        {
+          "id": "M2-T5",
+          "title": "Entity Extraction (NER)",
+          "description": "Implement entity extraction using spaCy or HF models; support custom entity types needed for app (dates, product names, locations).",
+          "dependencies": ["M2-T1", "M2-T3"],
+          "deliverables": ["NER pipeline code", "Trained NER model or config", "Unit tests for entity extraction"]
+        },
+        {
+          "id": "M2-T6",
+          "title": "Small Talk / Chit-Chat Module",
+          "description": "Create a light-weight small-talk handler (rule-based or HF casual chit-chat model fallback) with safe response filtering and conversation persona rules.",
+          "dependencies": ["M2-T3"],
+          "deliverables": ["Small-talk handler code", "Persona/rules doc", "Integration tests"]
+        },
+        {
+          "id": "M2-T7",
+          "title": "NLP Service Interface & Adapter Layer",
+          "description": "Build an adapter layer that provides a unified interface for intent, entity, and small-talk outputs so backend can call a single function.",
+          "dependencies": ["M2-T4", "M2-T5", "M2-T6"],
+          "deliverables": ["Adapter API spec", "Adapter implementation", "Examples of adapter calls"]
+        }
+      ]
+    },
+    {
+      "id": "M3",
+      "title": "FAQ Knowledge Base & Retrieval",
+      "description": "Design and implement a searchable FAQ knowledge base, ingestion pipeline, retrieval and ranking logic to answer factual questions.",
+      "tasks": [
+        {
+          "id": "M3-T1",
+          "title": "KB Schema & Storage Choice",
+          "description": "Design KB schema (documents, metadata, embeddings) and choose storage (Postgres full-text, Elasticsearch, or vector DB like Milvus/Weaviate/FAISS).",
+          "dependencies": ["M1-T3"],
+          "deliverables": ["KB schema doc", "Storage recommendation", "KB prototype instance"]
+        },
+        {
+          "id": "M3-T2",
+          "title": "KB Ingestion & Normalization",
+          "description": "Implement ingestion scripts to parse CSV/PDF/Markdown into KB documents, normalize text, extract metadata and generate embeddings (if using vector DB).",
+          "dependencies": ["M3-T1", "M2-T1"],
+          "deliverables": ["Ingestion scripts", "Normalized KB dataset", "Sample ingested entries in DB"]
+        },
+        {
+          "id": "M3-T3",
+          "title": "Retrieval & Ranking Engine",
+          "description": "Implement retrieval logic (BM25 / vector similarity) and ranking combining intent signals and KB relevance; implement confidence scoring & fallback rules.",
+          "dependencies": ["M3-T2", "M2-T4"],
+          "deliverables": ["Retrieval service code", "Ranking function", "Benchmarks and confidence thresholds"]
+        },
+        {
+          "id": "M3-T4",
+          "title": "KB Answer Formatter & Attribution",
+          "description": "Create component to format KB answers for user display, include source attribution, snippet highlighting and suggested follow-ups.",
+          "dependencies": ["M3-T3"],
+          "deliverables": ["Answer formatter module", "Attribution metadata included in responses", "UI-ready JSON sample"]
+        }
+      ]
+    },
+    {
+      "id": "M4",
+      "title": "Sentiment Analysis & Tone Adjustment",
+      "description": "Detect user sentiment to adjust the bot response tone and ensure empathetic responses where required.",
+      "tasks": [
+        {
+          "id": "M4-T1",
+          "title": "Sentiment Model Selection",
+          "description": "Select or train sentiment model (rule-based, huggingface/text-classification) and define sentiment categories and thresholds.",
+          "dependencies": ["M2-T3"],
+          "deliverables": ["Sentiment model selection report", "Trained or configured model", "Threshold definitions"]
+        },
+        {
+          "id": "M4-T2",
+          "title": "Sentiment Integration in Pipeline",
+          "description": "Integrate sentiment detection into the NLP adapter so each query returns sentiment metadata used by response generator.",
+          "dependencies": ["M4-T1", "M2-T7"],
+          "deliverables": ["Integrated sentiment output in adapter", "Unit tests for sentiment propagation"]
+        },
+        {
+          "id": "M4-T3",
+          "title": "Response Tone Adjuster",
+          "description": "Implement response tone module that modifies or selects response templates based on sentiment (e.g., empathetic when negative).",
+          "dependencies": ["M4-T2", "M3-T4"],
+          "deliverables": ["Tone adjustment rules", "Response templates in multiple tones", "Integration tests showing tone change"]
+        }
+      ]
+    },
+    {
+      "id": "M5",
+      "title": "Backend API & Integration",
+      "description": "Design and implement REST API endpoints for chat inference, management of KB, model management, and health monitoring.",
+      "tasks": [
+        {
+          "id": "M5-T1",
+          "title": "API Design & OpenAPI Spec",
+          "description": "Define REST endpoints (POST /chat, GET /health, POST /kb/import, GET /metrics, POST /models/reload) and produce OpenAPI (Swagger) spec.",
+          "dependencies": ["M1-T3", "M2-T7", "M3-T3"],
+          "deliverables": ["OpenAPI spec (YAML/JSON)", "Endpoint definitions with request/response schemas"]
+        },
+        {
+          "id": "M5-T2",
+          "title": "API Implementation with FastAPI",
+          "description": "Implement API using FastAPI (or Flask) with dependency injection for NLP adapter, KB, and sentiment modules. Add JSON response standard.",
+          "dependencies": ["M5-T1", "M2-T7", "M3-T3", "M4-T2"],
+          "deliverables": ["API codebase", "Uvicorn run scripts", "Working /chat endpoint"]
+        },
+        {
+          "id": "M5-T3",
+          "title": "Authentication & Rate-Limiting",
+          "description": "Add API key based auth for external integrations, and rate-limiting using Redis to prevent abuse.",
+          "dependencies": ["M5-T2", "M1-T4"],
+          "deliverables": ["Auth middleware", "Rate-limiting middleware", "Test keys and docs"]
+        },
+        {
+          "id": "M5-T4",
+          "title": "Logging, Metrics & Monitoring",
+          "description": "Add structured request/response logging, metrics (Prometheus-compatible), and health checks. Ensure PII is not logged.",
+          "dependencies": ["M5-T2"],
+          "deliverables": ["Logging config", "Metrics endpoints", "Health check endpoint"]
+        }
+      ]
+    },
+    {
+      "id": "M6",
+      "title": "Frontend Chat UI (Optional)",
+      "description": "Optional React frontend with chat interface to consume API, show conversation history, KB suggestions and tone indication.",
+      "tasks": [
+        {
+          "id": "M6-T1",
+          "title": "React App Skeleton & Auth",
+          "description": "Initialize React app (Vite/CRA), add routing, set up API client and simple auth (API key management in dev).",
+          "dependencies": ["M5-T1"],
+          "deliverables": ["React project skeleton", "API client module", "Sample auth UI"]
+        },
+        {
+          "id": "M6-T2",
+          "title": "Chat UI Component & Message Flow",
+          "description": "Develop chat component with streaming responses (if supported), message bubbles, user input, typing indicator, and sentiment/tone badges.",
+          "dependencies": ["M6-T1", "M5-T2"],
+          "deliverables": ["Chat UI components", "Storybook / visual examples", "Integration demo with backend"]
+        },
+        {
+          "id": "M6-T3",
+          "title": "KB Browser & Feedback Widget",
+          "description": "Implement a KB browser panel with search & upvote/downvote feedback on answers to collect KB improvement signals.",
+          "dependencies": ["M3-T3", "M6-T1"],
+          "deliverables": ["KB browser UI", "Feedback collection endpoints integration"]
+        }
+      ]
+    },
+    {
+      "id": "M7",
+      "title": "Regional Language Support - Bangla (Optional)",
+      "description": "Add support for Bangla language: tokenization, model integration and evaluation using Hugging Face pretrained models.",
+      "tasks": [
+        {
+          "id": "M7-T1",
+          "title": "Bangla Model Research & Selection",
+          "description": "Survey Hugging Face models for Bangla (classification, NER, translation if needed), pick models for intent and sentiment or plan fine-tuning.",
+          "dependencies": ["M2-T3"],
+          "deliverables": ["Model selection report", "List of HF model IDs"]
+        },
+        {
+          "id": "M7-T2",
+          "title": "Bangla Tokenization & Preprocessing",
+          "description": "Implement Bangla-specific tokenization, normalization (unicode, diacritics), and preprocessing pipeline compatible with chosen models.",
+          "dependencies": ["M7-T1", "M2-T1"],
+          "deliverables": ["Preprocessing module", "Unit tests on sample Bangla text"]
+        },
+        {
+          "id": "M7-T3",
+          "title": "Bangla Integration & Evaluation",
+          "description": "Integrate Bangla models into NLP adapter, add language detection and routing, create evaluation suite (accuracy, BLEU if translation used).",
+          "dependencies": ["M7-T2", "M2-T7", "M4-T1"],
+          "deliverables": ["Integrated Bangla pipeline", "Evaluation report", "Demo conversations in Bangla"]
+        }
+      ]
+    },
+    {
+      "id": "M8",
+      "title": "Testing, QA & Deployment",
+      "description": "Prepare automated tests, containerization, staging deployment and runbooks to allow reliable releases and rollbacks.",
+      "tasks": [
+        {
+          "id": "M8-T1",
+          "title": "Unit & Integration Tests",
+          "description": "Write unit tests for NLP components, KB retrieval, API endpoints and sentiment; configure test runner and coverage thresholds.",
+          "dependencies": ["M2-T4", "M3-T3", "M5-T2"],
+          "deliverables": ["Test suites", "Coverage reports", "CI test step"]
+        },
+        {
+          "id": "M8-T2",
+          "title": "End-to-End (E2E) Tests",
+          "description": "Create e2e tests simulating user conversations covering intent routing, KB lookup, sentiment-based tone adjustments and API integrations.",
+          "dependencies": ["M6-T2", "M5-T2", "M3-T4", "M4-T3"],
+          "deliverables": ["E2E test scripts (Playwright / Cypress / pytest-bdd)", "E2E test reports"]
+        },
+        {
+          "id": "M8-T3",
+          "title": "Containerization & Deployment Config",
+          "description": "Create Docker images for services, write Helm/K8s manifests or docker-compose for local/staging deployment, and ensure resource configs.",
+          "dependencies": ["M1-T5", "M5-T2"],
+          "deliverables": ["Dockerfile(s)", "docker-compose.yml or Helm charts", "Deployment checklist"]
+        },
+        {
+          "id": "M8-T4",
+          "title": "Staging Deployment & Smoke Tests",
+          "description": "Deploy to a staging environment, run smoke tests, validate latency and correctness, and prepare rollback procedures.",
+          "dependencies": ["M8-T3", "M8-T1"],
+          "deliverables": ["Staging deployment URL", "Smoke test report", "Rollback runbook"]
+        }
+      ]
+    },
+    {
+      "id": "M9",
+      "title": "Security, Privacy & Compliance",
+      "description": "Ensure user data is handled securely, PII is protected, and compliance measures are documented for production usage.",
+      "tasks": [
+        {
+          "id": "M9-T1",
+          "title": "Data Storage & Encryption",
+          "description": "Define storage lifecycle, encrypt sensitive fields at rest and in transit, and document access controls for logs and DB.",
+          "dependencies": ["M1-T4", "M3-T1"],
+          "deliverables": ["Encryption strategy doc", "DB encryption config", "Access control matrix"]
+        },
+        {
+          "id": "M9-T2",
+          "title": "Privacy Controls & Pseudonymization",
+          "description": "Implement PII detection in logs and responses, pseudonymize or mask personal data, and provide data deletion API for users.",
+          "dependencies": ["M5-T2", "M2-T5"],
+          "deliverables": ["PII masking module", "Data deletion endpoint", "Privacy policy draft"]
+        }
+      ]
+    },
+    {
+      "id": "M10",
+      "title": "Documentation, Analytics & Handoff",
+      "description": "Deliver developer docs, API docs, analytics dashboard and a handoff package for product owners and ops.",
+      "tasks": [
+        {
+          "id": "M10-T1",
+          "title": "Developer Documentation",
+          "description": "Write setup guides, architecture docs, coding conventions, and runbook for developers to run the system locally and in staging.",
+          "dependencies": ["M1-T2", "M5-T2", "M8-T3"],
+          "deliverables": ["Developer docs site (Markdown)", "Runbook for common tasks"]
+        },
+        {
+          "id": "M10-T2",
+          "title": "API & SDK Documentation",
+          "description": "Publish API docs derived from OpenAPI, provide sample SDK snippets in Python and JavaScript, and example cURL requests.",
+          "dependencies": ["M5-T1"],
+          "deliverables": ["Swagger UI or static API docs", "Python & JS sample client snippets"]
+        },
+        {
+          "id": "M10-T3",
+          "title": "Analytics & Usage Dashboards",
+          "description": "Instrument calls for usage metrics (queries per minute, intents distribution, KB hits, latency) and provide dashboards (Grafana/Metabase).",
+          "dependencies": ["M5-T4", "M8-T1"],
+          "deliverables": ["Metrics dashboard", "Analytics queries and report templates", "Monthly usage baseline"]
+        }
+      ]
+    }
+  ],
+  "notes": {
+    "total_modules": 10,
+    "total_tasks_estimated": 35,
+    "optional_features": [
+      "Frontend (M6) is optional; APIs allow easy integration with web/mobile clients",
+      "Bangla support (M7) is optional and should be gated behind language detection"
+    ],
+    "implementation_advice": [
+      "Prefer FastAPI for rapid OpenAPI generation and async support when calling HF model endpoints",
+      "Keep the NLP adapter pluggable so models can be swapped without changing API",
+      "Store models/artifacts in a model registry or artifact storage (S3 / GCS)",
+      "Use Redis for caching frequent KB responses and rate-limiting",
+      "Start with rule-based fallback and expand ML models as labeled data grows"
+    ],
+    "risk_and_mitigation": [
+      {
+        "risk": "Poor intent accuracy initially",
+        "mitigation": "Start with narrow intent taxonomy, add human-in-the-loop correction and active learning"
+      },
+      {
+        "risk": "PII leakage in logs",
+        "mitigation": "PII detection & masking (M9-T2) must be included before production releases"
+      },
+      {
+        "risk": "High latency from remote HF models",
+        "mitigation": "Introduce caching and asynchronous request handling; consider local distilled models"
+      }
+    ]
+  }
+}
