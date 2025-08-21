@@ -18,6 +18,7 @@ class ChatResponse(BaseModel):
 	entities: List[EntityModel]
 	sentiment: str
 	sentiment_score: float
+	language: str
 	answer: str
 	source_id: Optional[str] = None
 	snippet: Optional[str] = None
@@ -31,3 +32,7 @@ class ImportKBResponse(BaseModel):
 class ReloadModelsResponse(BaseModel):
 	status: str
 	info: Any | None = None
+
+
+class DeleteDataResponse(BaseModel):
+	status: str

@@ -2,7 +2,7 @@ import time
 from collections import defaultdict, deque
 from typing import Deque, Dict
 
-from fastapi import Header, HTTPException, status
+from fastapi import Header, HTTPException, status, Request
 
 from .config import get_api_keys, get_rate_limit_per_minute
 
@@ -16,7 +16,10 @@ def require_api_key(x_api_key: str | None = Header(default=None)) -> None:
 		raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid API key")
 
 
-def rate_limit(x_api_key: str | None = Header(default=None)) -> None:
+def rate_limit(request: Request, x_api_key: str | None = Header(default=None)) -> None:
+	# Only enforce limit on chat endpoint
+	if request.url.path != "/chat":
+		return
 	limit = get_rate_limit_per_minute()
 	window = 60.0
 	now = time.time()

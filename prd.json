@@ -249,29 +249,22 @@
     },
     {
       "id": "M7",
-      "title": "Regional Language Support - Bangla (Optional)",
-      "description": "Add support for Bangla language: tokenization, model integration and evaluation using Hugging Face pretrained models.",
+      "title": "Multilingual Support (Optional)",
+      "description": "Add general multilingual support via language detection and pluggable model routing.",
       "tasks": [
         {
           "id": "M7-T1",
-          "title": "Bangla Model Research & Selection",
-          "description": "Survey Hugging Face models for Bangla (classification, NER, translation if needed), pick models for intent and sentiment or plan fine-tuning.",
-          "dependencies": ["M2-T3"],
-          "deliverables": ["Model selection report", "List of HF model IDs"]
+          "title": "Language Detection & Routing",
+          "description": "Implement language detection and route to language-specific resources as available.",
+          "dependencies": ["M2-T7"],
+          "deliverables": ["Language detection module", "Routing logic", "Unit tests"]
         },
         {
           "id": "M7-T2",
-          "title": "Bangla Tokenization & Preprocessing",
-          "description": "Implement Bangla-specific tokenization, normalization (unicode, diacritics), and preprocessing pipeline compatible with chosen models.",
-          "dependencies": ["M7-T1", "M2-T1"],
-          "deliverables": ["Preprocessing module", "Unit tests on sample Bangla text"]
-        },
-        {
-          "id": "M7-T3",
-          "title": "Bangla Integration & Evaluation",
-          "description": "Integrate Bangla models into NLP adapter, add language detection and routing, create evaluation suite (accuracy, BLEU if translation used).",
-          "dependencies": ["M7-T2", "M2-T7", "M4-T1"],
-          "deliverables": ["Integrated Bangla pipeline", "Evaluation report", "Demo conversations in Bangla"]
+          "title": "Localization & Tokenization Hooks",
+          "description": "Provide hooks for language-specific tokenization and normalization without hardcoding to one language.",
+          "dependencies": ["M7-T1"],
+          "deliverables": ["Preprocessing hooks", "Sample configs"]
         }
       ]
     },

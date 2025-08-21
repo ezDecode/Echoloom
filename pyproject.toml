@@ -17,6 +17,7 @@ dependencies = [
   "scikit-learn>=1.5",
   "vaderSentiment>=3.3",
   "prometheus-client>=0.20",
+  "langdetect>=1.0",
 ]
 
 [project.optional-dependencies]
