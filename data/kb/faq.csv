@@ -1,0 +1,4 @@
+id,question,answer,tags,intent
+faq_hours,What are your hours?,We are open 9am-5pm Monday to Friday.,hours,faq_hours
+faq_location,Where is your office located?,Our office is at 123 Main St.,location,faq_location
+faq_password_reset,How can I reset my password?,Use the Forgot Password link on the login page.,account,faq_password_reset
