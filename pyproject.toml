@@ -18,6 +18,8 @@ dependencies = [
   "vaderSentiment>=3.3",
   "prometheus-client>=0.20",
   "langdetect>=1.0",
+  "cryptography>=41.0.0",
+  "bleach>=6.0.0",
 ]
 
 [project.optional-dependencies]
